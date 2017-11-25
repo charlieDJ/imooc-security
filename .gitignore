@@ -20,3 +20,10 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+imooc-security.iml
+imooc-security-demo.iml
+imooc-security-core.iml
+imooc-security-browser.iml
+imooc-security-app.iml
+
