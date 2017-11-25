@@ -1,7 +1,6 @@
 package com.imooc.security.core.validate.code;
 
 import com.imooc.security.core.properties.SecurityProperties;
-import com.imooc.security.core.validate.code.image.ImageCode;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -21,8 +20,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ValidateCodeFilter extends OncePerRequestFilter implements InitializingBean{
-
+public class SmsCodeFilter extends OncePerRequestFilter implements InitializingBean{
 
     private AuthenticationFailureHandler authenticationFailureHandler;
 
@@ -42,7 +40,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
         for (String configUrl : configUrls) {
             urls.add(configUrl);
         }*/
-        urls.add("/authentication/form");
+        urls.add("/authentication/mobile");
     }
 
     @Override
@@ -66,8 +64,8 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     }
 
     private void validate(ServletWebRequest request) throws ServletRequestBindingException {
-        ImageCode codeInSession = (ImageCode) sessionStrategy.getAttribute(request,ValidateCodeController.SESSION_KEY_IMAGE);
-        String codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), "imageCode");
+        ValidateCode codeInSession = (ValidateCode) sessionStrategy.getAttribute(request,ValidateCodeController.SESSION_KEY_CODE);
+        String codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), "smsCode");
         if(StringUtils.isBlank(codeInRequest)){
             throw new ValidateCodeException("验证码不能为空");
         }
@@ -75,13 +73,13 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
             throw new ValidateCodeException("验证码不存在");
         }
         if(codeInSession.isExpired()){
-            sessionStrategy.removeAttribute(request,ValidateCodeController.SESSION_KEY_IMAGE);
+            sessionStrategy.removeAttribute(request,ValidateCodeController.SESSION_KEY_CODE);
             throw new ValidateCodeException("验证码过期");
         }
         if(!StringUtils.equals(codeInSession.getCode(),codeInRequest)){
             throw new ValidateCodeException("验证码不匹配");
         }
-        sessionStrategy.removeAttribute(request,ValidateCodeController.SESSION_KEY_IMAGE);
+        sessionStrategy.removeAttribute(request,ValidateCodeController.SESSION_KEY_CODE);
     }
 
     public AuthenticationFailureHandler getAuthenticationFailureHandler() {
@@ -115,6 +113,4 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     public void setSecurityProperties(SecurityProperties securityProperties) {
         this.securityProperties = securityProperties;
     }
-
-
 }
