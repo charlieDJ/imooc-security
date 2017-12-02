@@ -4,7 +4,9 @@ import com.imooc.web.filter.TimeFilter;
 import com.imooc.web.interceptor.TimeInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.ArrayList;
@@ -31,6 +33,12 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         urls.add("/*");
         filterRegistrationBean.setUrlPatterns(urls);
         return filterRegistrationBean;
+    }
+
+    //开启方法级验证
+    @Bean
+    public MethodValidationPostProcessor mvp(){
+        return new MethodValidationPostProcessor();
     }
 
 

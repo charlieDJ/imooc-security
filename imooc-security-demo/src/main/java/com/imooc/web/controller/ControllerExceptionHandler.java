@@ -23,4 +23,12 @@ public class ControllerExceptionHandler {
         return result;
     }
 
+    @ExceptionHandler(Exception.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Exception handleException(Exception ex){
+        return ex;
+    }
+
+
 }
